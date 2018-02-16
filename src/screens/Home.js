@@ -19,7 +19,7 @@ const Home = ({ navigation }) => (
 );
 
 Home.navigationOptions = {
-  title: 'Home',
+  title: 'Beer Explorer',
 };
 
 export default Home;

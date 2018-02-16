@@ -1,5 +1,11 @@
 import React from 'react';
-import { withProps } from 'recompose';
+import { withProps, setStatic, compose } from 'recompose';
+
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 
 import {
   Screen,
@@ -17,24 +23,37 @@ const Detail = ({ beer }) => (
       <ImageBackground
         testID="DetailBackground"
         styleName="large-banner"
-        source={{ uri: beer.image.url }}
+        source={{ uri: beer.images[0] }}
       >
         <Tile>
           <Overlay styleName="image-overlay">
             <Title testID="DetailTitle" styleName="sm-gutter-horizontal">{beer.name}</Title>
-            <Subtitle testID="DetailSubTitle">{beer.description}</Subtitle>
+            <Subtitle testID="DetailSubTitle">{beer.summary}</Subtitle>
           </Overlay>
         </Tile>
       </ImageBackground>
+      <ScrollView>
+        <Text style={styles.description}>
+          {beer.description}
+        </Text>
+      </ScrollView>
     </Screen>
 );
 
-Detail.navigationOptions = {
-  title: 'Detail',
-};
+const styles = StyleSheet.create({
+  description: {
+    padding: 25,
+  },
+});
 
 const mapNavigationToProps = ({ navigation }) => ({
   beer: beers.find(({ id }) => id == navigation.state.params.beerId),
 });
 
-export default withProps(mapNavigationToProps)(Detail);
+export default compose(
+  setStatic('navigationOptions', props => {
+    const { beer } = mapNavigationToProps(props);
+    return { title: beer.name };
+  }),
+  withProps(mapNavigationToProps),
+)(Detail);
